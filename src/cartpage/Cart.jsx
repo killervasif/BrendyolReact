@@ -34,10 +34,12 @@ function Cart() {
   }
 
   useEffect(() => {
-    orders.forEach(p => {
-      setSum(prev => prev + p.price);
+    setSum(0);
+    orders.forEach(order => {
+      const orderPrice = order.price * order.quantity;
+      setSum(prev => prev + orderPrice);
     });
-  }, []);
+  }, [orders]);
 
   return (
     <div className="md:px-20 lg:px-28">

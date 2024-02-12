@@ -1,25 +1,40 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import Context from '../../contexts/GlobalContext';
 
-function ProductInfo({ setSum, data }) {
+function ProductInfo({ data }) {
     const { orders, setOrders } = useContext(Context)
-    const [quantity, setQuantity] = useState(1)
 
     function increment() {
-        if (quantity < data.inventory) {
-            setSum(prev => prev + data.price)
-            setQuantity(prev => prev + 1)
-        }
+        const updatedOrders = orders.map(order => {
+            if (order.id === data.id) {
+                const newQuantity = order.quantity + 1;
+                return {
+                    ...order,
+                    quantity: newQuantity <= order.inventory ? newQuantity : order.quantity
+                };
+            }
+        });
+        setOrders(updatedOrders)
     }
 
     function decrement() {
-        if (quantity === 1) {
-            const updatedOrders = orders.filter(product => product.id !== data.id);
-            setOrders(updatedOrders);
-        }
-        setQuantity(prev => prev - 1)
-        setSum(prev => prev - data.price)
+        const updatedOrders = orders.map(order => {
+            if (order.id === data.id) {
+                const newQuantity = order.quantity - 1;
+                return { ...order, quantity: newQuantity > 0 ? newQuantity : 0 };
+            }
+            return order;
+        });
+
+        const filteredOrders = updatedOrders.filter(order => order.quantity > 0);
+
+        setOrders(filteredOrders);
     }
+
+    useEffect(() => {
+        if (data.quantity === 0)
+            console.log("Temp")
+    })
 
     return (
         <div>
@@ -51,9 +66,9 @@ function ProductInfo({ setSum, data }) {
                 </div>
                 <div className="flex flex-col-reverse gap-5 my-5 lg:my-5 lg:flex-row">
                     <div className="flex lg:flex-col h-full my-5 items-center justify-between">
-                    <button onClick={increment} className="flex border order-3 lg:order-1 hover:text-white hover:bg-black border-zinc-900 text-3xl pb-2 justify-center items-center w-[45px] h-[45px]">                            +
+                    <button onClick={()=>increment()} className="flex border order-3 lg:order-1 hover:text-white hover:bg-black border-zinc-900 text-3xl pb-2 justify-center items-center w-[45px] h-[45px]">
                         </button>
-                        <p className="order-2">{quantity}</p>
+                        <p className="order-2">{data.quantity}</p>
                         <button onClick={() => decrement()} className="flex border order-1 lg:order-3 hover:text-white hover:bg-black border-zinc-900 text-3xl pb-2 justify-center items-center w-[45px] h-[45px]">
                             -
                         </button>

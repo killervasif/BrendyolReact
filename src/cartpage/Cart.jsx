@@ -51,7 +51,7 @@ function Cart() {
         {orders.length ? orders.map((product) => (<ProductInfo setSum={setSum} key={product.id} data={product} />)) : null}
         </div>
         <div className="flex flex-col text-2xl font-light">
-          <label>Tax 18%: <span className="ml-2 font-bold"><span>$</span>18.00</span></label>
+          <label>Tax 18%: <span className="ml-2 font-bold"><span>$</span>{((sum / 100) * 18).toFixed(2)}</span></label>
           <label>Orders Count: <span className="ml-2 font-bold">{orders.length}</span></label>
           <label>Total: <span className="ml-2 font-bold"><span>$</span>{sum}</span></label>
         </div>

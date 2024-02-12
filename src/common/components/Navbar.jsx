@@ -92,7 +92,7 @@ function Navbar() {
               </select>
             </li>
             <li>
-              <button className="py-3 px-6 border-b-2 border-transparent hover:text-green-400 hover:border-green-400">
+              <button onClick={()=> navigate("/cart")} className="py-3 px-6 border-b-2 border-transparent hover:text-green-400 hover:border-green-400">
                 <img src={CartIcon} className="w-[20px] h-[20px]" alt="cart_icon" />
               </button>
             </li>

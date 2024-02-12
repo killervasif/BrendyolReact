@@ -6,7 +6,7 @@ import { useCookieContext } from '../contexts/CookieContext';
 
 function Cart() {
   const { cookies } = useCookieContext();
-  const { orders, getOrders } = useContext(Context);
+  const { orders } = useContext(Context);
   const [productsInfo, setProductsInfo] = useState([])
 
   async function sendOrders() {

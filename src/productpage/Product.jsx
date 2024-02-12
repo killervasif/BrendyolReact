@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Navbar from '../common/components/Navbar'
 import { useParams } from 'react-router-dom'
+import Context from '../contexts/GlobalContext';
 
 function Product() {
     const { id } = useParams();
+    const { addProductToOrder } = useContext(Context)
     const [product, setProduct] = useState({});
     const [activeIMG, setActiveIMG] = useState('');
 
@@ -72,7 +74,9 @@ function Product() {
                         </p>
                     </div>
                     <div className="mt-10">
-                        <button className="bg-[#5ECE7B] text-white w-full max-w-[300px] py-4 font-medium">
+                    <button onClick={() => {
+                            addProductToOrder(product);
+                        }} className="bg-[#5ECE7B] text-white w-full max-w-[300px] py-4 font-medium">
                             ADD TO CART
                         </button>
                     </div>

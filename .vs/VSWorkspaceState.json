@@ -2,8 +2,8 @@
   "ExpandedNodes": [
     "",
     "\\src",
-    "\\src\\mainpage"
+    "\\src\\common",
+    "\\src\\common\\components"
   ],
-  "SelectedNode": "\\src\\mainpage\\Main.jsx",
   "PreviewInSolutionExplorer": false
 }

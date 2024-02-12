@@ -46,10 +46,12 @@ function Navbar() {
               <img src={CartIcon} className="w-[20px] h-[20px]" alt="cart_icon" />
               <span className="absolute rounded-full bg-black top-[-5px] right-[10px] py-[0.5px] px-[8px] text-white">{orders.length}</span>
             </button>
+            </li>
+            <li>
             <button onClick={() => {
               navigate("/login")
-              removeCookie("accessToken")
-              }} className="p-6 border-b-2 border-transparent hover:text-green-400 hover:border-green-400">
+              removeCookie("accessToken")              
+            }} className="p-6 border-b-2 border-transparent hover:text-green-400 hover:border-green-400">
               Log Out
             </button>
           </li>
@@ -100,6 +102,14 @@ function Navbar() {
               <button onClick={()=> navigate("/cart")} className="relative py-3 px-6 border-b-2 border-transparent hover:text-green-400 hover:border-green-400">
                 <img src={CartIcon} className="w-[20px] h-[20px]" alt="cart_icon" />
                 <span className="absolute rounded-full bg-black top-[-5px] right-[10px] py-[0.5px] px-[8px] text-white">{orders.length}</span>
+              </button>
+            </li>
+            <li>
+              <button onClick={() => {
+                navigate("/login")
+                removeCookie("accessToken")
+              }} className="p-6 border-b-2 border-transparent hover:text-green-400 hover:border-green-400">
+                Log Out
               </button>
             </li>
           </ul>

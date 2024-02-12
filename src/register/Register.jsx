@@ -4,9 +4,11 @@ import LockIcon from "../assets/Lock.svg";
 import UserIcon from "../assets/User.svg";
 import { useContext, useState } from "react";
 import { useCookieContext } from "../contexts/CookieContext";
+import Context from "../contexts/GlobalContext";
 
 function Register() {
-  const { setCookie, cookies } = useCookieContext()
+  const { getOrders } = useContext(Context)
+  const { setCookie } = useCookieContext()
   const [formData, setFormData] = useState({});
   const navigate = useNavigate();
 

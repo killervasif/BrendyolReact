@@ -7,7 +7,7 @@ import { useCookieContext } from '../contexts/CookieContext';
 function Cart() {
   const { cookies } = useCookieContext();
   const { orders } = useContext(Context);
-  const [productsInfo, setProductsInfo] = useState([])
+  const [sum, setSum] = useState(0)
 
   async function sendOrders() {
     try {
@@ -33,11 +33,11 @@ function Cart() {
     }
   }
 
-  // function calculateTotal() {
-  //   let sum = 0;
-  //   productsInfo.map((p) => sum += (p.price * p.quantity));
-  //   return sum;
-  // }
+  useEffect(() => {
+    orders.forEach(p => {
+      setSum(prev => prev + p.price);
+    });
+  }, []);
 
   return (
     <div className="md:px-20 lg:px-28">
@@ -46,14 +46,14 @@ function Cart() {
         <h1 className="text-5xl font-semibold mt-[80px] mb-[40px]">CART</h1>
         <div className="border border-zinc-200 w-full mt-[75px]"></div>
         <div>
-          {orders.length ? orders.map((product) => (<ProductInfo productsInfo={productsInfo} setProductsInfo={setProductsInfo} key={product.id} data={product} />)) : null}
+        {orders.length ? orders.map((product) => (<ProductInfo setSum={setSum} key={product.id} data={product} />)) : null}
         </div>
         <div className="flex flex-col text-2xl font-light">
           <label>Tax 18%: <span className="ml-2 font-bold"><span>$</span>18.00</span></label>
-          <label>Quantity: <span className="ml-2 font-bold">{orders.length}</span></label>
-          <label>Total: <span className="ml-2 font-bold"><span>$</span>100</span></label>
+          <label>Orders Count: <span className="ml-2 font-bold">{orders.length}</span></label>
+          <label>Total: <span className="ml-2 font-bold"><span>$</span>{sum}</span></label>
         </div>
-        <button onClick={() => sendOrders()} className="bg-[#5ECE7B] my-9 text-white w-full max-w-[300px] py-4 font-medium">
+        <button onClick={() => sendOrders()} className="bg-[#5ECE7B] active:bg-[#9ce9b1] my-9 text-white w-full max-w-[300px] py-4 font-medium">
           ORDER
         </button>
       </div>

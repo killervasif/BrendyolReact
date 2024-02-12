@@ -5,13 +5,9 @@ import { useNavigate } from "react-router-dom";
 import Context from "../../contexts/GlobalContext";
 
 function Navbar() {
-  const { categories, getCategories, setCurrentCategory, filterProducts } = useContext(Context)
+  const { categories, setCurrentCategory, filterProducts, orders} = useContext(Context)
   const [openNav, setOpenNav] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    getCategories()
-  }, [])
 
   return (
     <nav className="px-4">
@@ -44,8 +40,9 @@ function Navbar() {
             </select>
           </li>
           <li>
-          <button onClick={()=> navigate("/cart")} className="p-6 border-b-2 border-transparent hover:text-green-400 hover:border-green-400">
+          <button onClick={()=> navigate("/cart")} className="relative p-6 border-b-2 border-transparent hover:text-green-400 hover:border-green-400">
               <img src={CartIcon} className="w-[20px] h-[20px]" alt="cart_icon" />
+              <span className="absolute rounded-full bg-black top-[-5px] right-[10px] py-[0.5px] px-[8px] text-white">{orders.length}</span>
             </button>
           </li>
         </ul>
@@ -92,8 +89,9 @@ function Navbar() {
               </select>
             </li>
             <li>
-              <button onClick={()=> navigate("/cart")} className="py-3 px-6 border-b-2 border-transparent hover:text-green-400 hover:border-green-400">
+              <button onClick={()=> navigate("/cart")} className="relative py-3 px-6 border-b-2 border-transparent hover:text-green-400 hover:border-green-400">
                 <img src={CartIcon} className="w-[20px] h-[20px]" alt="cart_icon" />
+                <span className="absolute rounded-full bg-black top-[-5px] right-[10px] py-[0.5px] px-[8px] text-white">{orders.length}</span>
               </button>
             </li>
           </ul>

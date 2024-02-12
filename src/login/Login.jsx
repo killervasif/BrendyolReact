@@ -3,9 +3,11 @@ import LetterIcon from "../assets/Letter.svg";
 import LockIcon from "../assets/Lock.svg";
 import { useContext, useState } from "react";
 import { useCookieContext } from "../contexts/CookieContext";
+import Context from "../contexts/GlobalContext";
 
 function Login() {
-    const { setCookie, cookies } = useCookieContext()
+    const { getOrders } = useContext(Context)
+    const { setCookie} = useCookieContext()
     const [formData, setFormData] = useState({});
     const navigate = useNavigate()
     const login = async () => {
@@ -23,7 +25,6 @@ function Login() {
                 const data = await response.json();
                 const token = data.user.token;
                 setCookie('accessToken', token, { path: '/' });
-                console.log(data);
                 navigate("/main")
             }
             else {

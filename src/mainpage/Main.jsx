@@ -6,11 +6,7 @@ import Context from '../contexts/GlobalContext';
 
 function MainPage() {
     const { cookies } = useCookieContext();
-    const { currentCategory, filteredProducts, filterProducts, getProducts, products } = useContext(Context)
-    
-    useEffect(() => {
-        getProducts();
-    }, [])
+    const { currentCategory, filteredProducts, products } = useContext(Context)
 
     return (
         <>

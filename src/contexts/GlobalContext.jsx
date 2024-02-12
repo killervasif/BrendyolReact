@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCookieContext } from "./CookieContext";
 
@@ -7,48 +7,80 @@ export default Context;
 
 export const GlobalContext = ({ children }) => {
     const { cookies } = useCookieContext();
-    const [categories, setCategories] = useState([])
-    const [currentCategory, setCurrentCategory] = useState("All")
-    const [products, setProducts] = useState([])
-    const [filteredProducts, setFilteredProducts] = useState([])
-    const [orders, setOrders] = useState([])
     const navigate = useNavigate();
+    const [categories, setCategories] = useState([]);
+    const [currentCategory, setCurrentCategory] = useState("All");
+    const [products, setProducts] = useState([]);
+    const [filteredProducts, setFilteredProducts] = useState([]);
+    const [orders, setOrders] = useState([]);
 
-    async function getProducts() {
+    const getCategoriesAndProducts = useCallback(async () => {
         try {
-            const response = await fetch("http://localhost:5000/api/products");
+            const response = await fetch("http://localhost:5000/api/products", {
+                headers: {
+                    "Authorization": `Bearer ${cookies.accessToken}`
+                }
+            });
             if (response.ok) {
-                const data = await response.json()
-                setProducts(data.product)
-            }
-            else {
-                console.log(response.status)
-                console.log(response.json())
-            }
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-    async function getCategories() {
-        try {
-            const response = await fetch("http://localhost:5000/api/products");
-            if (response.ok) {
-                const data = await response.json()
+                const data = await response.json();
                 const { product } = data;
-                const cat = Array.from(new Set(product.map(p => p.category)));
-                setCategories(["All", ...cat])
-            }
-            else {
-                console.log(response.status)
-                console.log(response.json())
+                const cat = ["All", ...new Set(product.map(p => p.category))];
+                setCategories(cat);
+                setProducts(product);
+                setFilteredProducts(product);
+            } else {
+                console.error(`Error fetching categories and products: ${response.status}`);
             }
         } catch (error) {
-            console.log(error)
+            console.error("Error fetching categories and products:", error);
         }
-    }
+    }, [cookies.accessToken]);
 
-    async function filterProducts(category) {
+    const getOrders = useCallback(async () => {
+        try {
+            const response = await fetch("http://localhost:5000/api/orders", {
+                headers: {
+                    "Authorization": `Bearer ${cookies.accessToken}`
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setOrders(data.orderItems);
+            } else {
+                console.error(`Error fetching orders: ${response.status}`);
+            }
+        } catch (error) {
+            console.error("Error fetching orders:", error);
+        }
+    }, [cookies.accessToken]);
+
+    useEffect(() => {
+        getCategoriesAndProducts();
+        getOrders();
+    }, [getCategoriesAndProducts, getOrders]);
+
+    const isTokenExpired = useCallback((token) => {
+        if (!token) {
+            return true;
+        }
+        const [, payloadBase64] = token.split('.');
+        const payload = JSON.parse(atob(payloadBase64));
+        const expirationTime = payload.exp;
+        const currentTime = Math.floor(Date.now() / 1000);
+        return expirationTime < currentTime;
+    }, []);
+
+    const addProductToOrder = useCallback((p) => {
+        setOrders(prevOrders => {
+            const productExists = prevOrders.find(product => product.id === p.id);
+            if (!productExists) {
+                return [...prevOrders, p];
+            }
+            return prevOrders;
+        });
+    }, []);
+
+    function filterProducts(category) {
         if (category === "All")
             setFilteredProducts([...products])
         else {
@@ -58,68 +90,20 @@ export const GlobalContext = ({ children }) => {
         }
     }
 
-    function addProductToOrder(p) {
-        const productExists = orders.find(product => product.id === p.id);
-        if (!productExists) {
-            setOrders(prev => [...prev, p])
-        }
-    }
-
-    async function getOrders() {
-        try {
-            const response = await fetch("http://localhost:5000/api/orders", {
-                headers:
-                {
-                    "Content-type": "application/json",
-                    "Authorization": `Bearer ${cookies.accessToken}`
-                }
-            })
-            if (response.ok) {
-                const data = await response.json();
-                setOrders(data.orderItems);
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    const isTokenExpired = (token) => {
-        if (!token) {
-            return true;
-        }
-
-        const [, payloadBase64] = token.split('.');
-
-        const payload = JSON.parse(atob(payloadBase64));
-
-        const expirationTime = payload.exp;
-
-        const currentTime = Math.floor(Date.now() / 1000);
-        return expirationTime < currentTime;
+    const contextData = {
+        categories,
+        currentCategory,
+        products,
+        filteredProducts,
+        orders,
+        navigate,
+        setCurrentCategory,
+        filterProducts,
+        getProducts: getCategoriesAndProducts,
+        getOrders,
+        isTokenExpired,
+        addProductToOrder
     };
 
-    useEffect(() => {
-        getOrders()
-    }, [])
-
-    const contextData = {
-        getCategories: getCategories,
-        categories: categories,
-        navigate: navigate,
-        currentCategory: currentCategory,
-        setCurrentCategory: setCurrentCategory,
-        filterProducts: filterProducts,
-        filteredProducts: filteredProducts,
-        products: products,
-        getProducts: getProducts,
-        orders: orders,
-        setOrders: setOrders,
-        getOrders: getOrders,
-        isTokenExpired: isTokenExpired,
-        addProductToOrder: addProductToOrder
-    }
-
-    return (
-        <Context.Provider value={contextData}>{children}</Context.Provider>
-    )
-}
+    return <Context.Provider value={contextData}>{children}</Context.Provider>;
+};

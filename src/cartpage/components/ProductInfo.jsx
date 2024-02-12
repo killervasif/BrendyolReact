@@ -1,44 +1,24 @@
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import Context from '../../contexts/GlobalContext';
 
-function ProductInfo({ productsInfo, setProductsInfo, data }) {
+function ProductInfo({ setSum, data }) {
     const { orders, setOrders } = useContext(Context)
-    const [productData, setProductData] = useState({
-        id: data.id,
-        price: data.price,
-        quantity: 1
-    });
+    const [quantity, setQuantity] = useState(1)
 
-    const incrementQuantity = (e) => {
-        e.preventDefault();
-        const updatedQuantity = productData.quantity + 1;
-        const updatedProductData = { ...productData, quantity: updatedQuantity };
+    function increment() {
+        if (quantity < data.inventory) {
+            setSum(prev => prev + data.price)
+            setQuantity(prev => prev + 1)
+        }
+    }
 
-        setProductData(updatedProductData);
-
-        const updatedProductsInfo = productsInfo.map(p => {
-            if (p.id === updatedProductData.id) {
-                return updatedProductData;
-            }
-            return p;
-        });
-
-        setProductsInfo(updatedProductsInfo);
-    };
-
-    function decrementQuantity() {
-        if (productData.quantity === 1) {
+    function decrement() {
+        if (quantity === 1) {
             const updatedOrders = orders.filter(product => product.id !== data.id);
             setOrders(updatedOrders);
-            setProductsInfo((prev) => prev.filter((p) => p.id != productData.id))
         }
-        else{
-            const value = productData.quantity;
-            setProductData((prev) => ({
-                ...prev,
-                quantity: value - 1
-            }))
-        }
+        setQuantity(prev => prev - 1)
+        setSum(prev => prev - data.price)
     }
 
     return (
@@ -71,11 +51,10 @@ function ProductInfo({ productsInfo, setProductsInfo, data }) {
                 </div>
                 <div className="flex flex-col-reverse gap-5 my-5 lg:my-5 lg:flex-row">
                     <div className="flex lg:flex-col h-full my-5 items-center justify-between">
-                    <button onClick={(e) => incrementQuantity(e)} className="flex border order-3 lg:order-1 hover:text-white hover:bg-black border-zinc-900 text-3xl pb-2 justify-center items-center w-[45px] h-[45px]">
-                            +
+                    <button onClick={increment} className="flex border order-3 lg:order-1 hover:text-white hover:bg-black border-zinc-900 text-3xl pb-2 justify-center items-center w-[45px] h-[45px]">                            +
                         </button>
-                        <p className="order-2">{productData.quantity}</p>
-                        <button onClick={() => decrementQuantity()} className="flex border order-1 lg:order-3 hover:text-white hover:bg-black border-zinc-900 text-3xl pb-2 justify-center items-center w-[45px] h-[45px]">
+                        <p className="order-2">{quantity}</p>
+                        <button onClick={() => decrement()} className="flex border order-1 lg:order-3 hover:text-white hover:bg-black border-zinc-900 text-3xl pb-2 justify-center items-center w-[45px] h-[45px]">
                             -
                         </button>
                     </div>

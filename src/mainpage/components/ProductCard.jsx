@@ -14,7 +14,7 @@ function ProductCard({ id, data }) {
                     src={data.gallery[0]}
                     alt="hehe"
                 />
-                <button onClick={() => addProductToOrder(data)} className="hidden group-hover:flex justify-center items-center border border-[#5ECE7B] bg-[#5ECE7B] rounded-full w-[50px] h-[50px] absolute right-5 -bottom-[25px]">
+                <button onClick={() => addProductToOrder(data)} className="hidden group-hover:flex active:border-[#9ce9b1] active:bg-[#9ce9b1] justify-center items-center border border-[#5ECE7B] bg-[#5ECE7B] rounded-full w-[50px] h-[50px] absolute right-5 -bottom-[25px]">
                     <img
                         className="w-[24px] h-[24px] mr-1"
                         src={CartIcon}

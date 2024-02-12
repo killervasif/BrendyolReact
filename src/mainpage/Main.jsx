@@ -5,7 +5,6 @@ import { useCookieContext } from '../contexts/CookieContext';
 import Context from '../contexts/GlobalContext';
 
 function MainPage() {
-    const { cookies } = useCookieContext();
     const { currentCategory, filteredProducts, products } = useContext(Context)
 
     return (
@@ -20,9 +19,9 @@ function MainPage() {
                         </h1>
                     </div>
                     <div className="my-10 flex flex-col justify-center sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-y-[100px] sm:gap-x-[10px]">
-                    {filteredProducts.length ? filteredProducts.map((product) => (<ProductCard key={product.id} id={product.id} data={product} />)) 
-                        : products.length ? products.map((product) => (<ProductCard key={product.id} id={product.id} data={product} />)) 
-                        : <p className='col-span-3 text-center font-bold'>No Products Found</p>}
+                        {filteredProducts.length ? filteredProducts.map((product) => (<ProductCard key={product.id} id={product.id} data={product} />))
+                            : products.length ? products.map((product) => (<ProductCard key={product.id} id={product.id} data={product} />))
+                                : <p className='col-span-3 text-center font-bold'>No Products Found</p>}
                     </div>
                 </div>
             </div>

@@ -13,6 +13,7 @@ export const GlobalContext = ({ children }) => {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [orders, setOrders] = useState([]);
+    const [isContextMount, setIsContextMount] = useState(false)
 
     const getCategoriesAndProducts = useCallback(async () => {
         try {
@@ -36,6 +37,24 @@ export const GlobalContext = ({ children }) => {
         }
     }, [cookies.accessToken]);
 
+    const getProductById = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/products/${id}`);
+            if (response.ok) {
+                const data = await response.json();
+                const { product } = data;
+                return product;
+            }
+            else {
+                console.log(response.status)
+                console.log(response.json())
+            }
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
     const getOrders = useCallback(async () => {
         try {
             const response = await fetch("http://localhost:5000/api/orders", {
@@ -54,10 +73,43 @@ export const GlobalContext = ({ children }) => {
         }
     }, [cookies.accessToken]);
 
+    async function sendOrders() {
+        try {
+            const response = await fetch("http://localhost:5000/api/orders", {
+                method: "PUT",
+                body: JSON.stringify({ orderItems: orders }),
+                headers:
+                {
+                    "Content-type": "application/json",
+                    "Authorization": `Bearer ${cookies.accessToken}`
+                }
+            })
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data);
+            }
+            else {
+                console.log(response.status)
+                console.log(response.json())
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     useEffect(() => {
         getCategoriesAndProducts();
         getOrders();
-    }, [getCategoriesAndProducts, getOrders]);
+    }, []);
+
+    useEffect(() => {
+        if (isContextMount) {
+            sendOrders();
+        }
+        else {
+            setIsContextMount(true);
+        }
+    }, [orders])
 
     const isTokenExpired = useCallback((token) => {
         if (!token) {
@@ -70,21 +122,9 @@ export const GlobalContext = ({ children }) => {
         return expirationTime < currentTime;
     }, []);
 
-    const addProductToOrder = useCallback((p) => {
-        const order = {
-            ...p,
-            quantity: 1
-        }
-
-        console.log(order)
-        setOrders(prevOrders => {
-            const productExists = prevOrders.find(product => product.id === p.id);
-            if (!productExists) {
-                return [...prevOrders, order];
-            }
-            return prevOrders;
-        });
-    }, []);
+    function addProductToOrder(p) {
+        setOrders(prev => [...prev, p])
+    };
 
     function filterProducts(category) {
         if (category === "All")
@@ -94,7 +134,7 @@ export const GlobalContext = ({ children }) => {
             console.log([...filtered])
             setFilteredProducts(filtered);
         }
-    }
+    };
 
     const contextData = {
         categories,
@@ -106,10 +146,11 @@ export const GlobalContext = ({ children }) => {
         setCurrentCategory,
         filterProducts,
         getProducts: getCategoriesAndProducts,
-        setProducts,
+        setOrders,
         getOrders,
         isTokenExpired,
-        addProductToOrder
+        addProductToOrder,
+        getProductById
     };
 
     return <Context.Provider value={contextData}>{children}</Context.Provider>;

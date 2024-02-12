@@ -7,7 +7,7 @@ import { useCookieContext } from "../../contexts/CookieContext";
 
 function Navbar() {
   const { removeCookie } = useCookieContext();
-  const { categories, setCurrentCategory, filterProducts, orders} = useContext(Context)
+  const { categories, setCurrentCategory, filterProducts, orders } = useContext(Context)
   const [openNav, setOpenNav] = useState(false);
   const navigate = useNavigate();
 
@@ -20,6 +20,7 @@ function Navbar() {
             <button onClick={() => {
               setCurrentCategory(c)
               filterProducts(c)
+              navigate("/main")
             }} className="py-6 border-b-2 mt-3 border-transparent hover:text-green-400 hover:border-green-400">{c}</button>
           </li>))}
         </ul>
@@ -42,15 +43,15 @@ function Navbar() {
             </select>
           </li>
           <li>
-          <button onClick={()=> navigate("/cart")} className="relative p-6 border-b-2 border-transparent hover:text-green-400 hover:border-green-400">
+            <button onClick={() => navigate("/cart")} className="relative p-6 border-b-2 border-transparent hover:text-green-400 hover:border-green-400">
               <img src={CartIcon} className="w-[20px] h-[20px]" alt="cart_icon" />
-              <span className="absolute rounded-full bg-black top-[-5px] right-[10px] py-[0.5px] px-[8px] text-white">{orders.length}</span>
+              <span className="absolute rounded-full bg-black top-[-5px] right-[10px]  py-[0.5px] px-[8px] text-white">{orders.length}</span>
             </button>
-            </li>
-            <li>
+          </li>
+          <li>
             <button onClick={() => {
               navigate("/login")
-              removeCookie("accessToken")              
+              removeCookie("accessToken")
             }} className="p-6 border-b-2 border-transparent hover:text-green-400 hover:border-green-400">
               Log Out
             </button>
@@ -70,7 +71,7 @@ function Navbar() {
             </button>
           </div>
           <button>
-          <img onClick={() => {
+            <img onClick={() => {
               navigate("/main")
               filterProducts("All")
               setCurrentCategory("All")
@@ -79,8 +80,8 @@ function Navbar() {
         </div>
         <div className={`${openNav ? "" : "hidden"}`}>
           <ul className="flex flex-col items-center mb-[25px] gap-8">
-          {categories.map((c) =>
-            (<li className="flex px-5 flex-col text-center w-full">
+            {categories.map((c) =>
+            (<li className="flex px-5  flex-col text-center w-full">
               <button onClick={() => {
                 setCurrentCategory(c)
                 filterProducts(c)
@@ -99,9 +100,9 @@ function Navbar() {
               </select>
             </li>
             <li>
-              <button onClick={()=> navigate("/cart")} className="relative py-3 px-6 border-b-2 border-transparent hover:text-green-400 hover:border-green-400">
+              <button onClick={() => navigate("/cart")} className="relative py-3 px-6 border-b-2 border-transparent hover:text-green-400 hover:border-green-400">
                 <img src={CartIcon} className="w-[20px] h-[20px]" alt="cart_icon" />
-                <span className="absolute rounded-full bg-black top-[-5px] right-[10px] py-[0.5px] px-[8px] text-white">{orders.length}</span>
+                <span className="absolute rounded-full bg-black top-[-5px] right-[10px]  py-[0.5px] px-[8px] text-white">{orders.length}</span>
               </button>
             </li>
             <li>

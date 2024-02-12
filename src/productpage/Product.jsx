@@ -4,28 +4,28 @@ import { useParams } from 'react-router-dom'
 import Context from '../contexts/GlobalContext';
 
 function Product() {
+    const { getProductById } = useContext(Context)
     const { id } = useParams();
     const { addProductToOrder } = useContext(Context)
     const [product, setProduct] = useState({});
     const [activeIMG, setActiveIMG] = useState('');
 
-    const getProductById = async () => {
-        const response = await fetch(`http://localhost:5000/api/products/${id}`);
-        if (response.ok) {
-            const data = await response.json();
-            const { product } = data;
-            setProduct(product);
-            setActiveIMG(product.gallery.length ? product.gallery[0] : '')
-        }
-        else {
-            console.log(response.status)
-            console.log(response.json())
-        }
+    const configureProduct = async () => {
+        const p = await getProductById(id)
+        console.log(p)
+        setProduct(p);
+        console.log(product)
     }
 
     useEffect(() => {
-        getProductById()
+        configureProduct()
     }, [])
+
+    useEffect(() => {
+        if (product && product.gallery && product.gallery.length) {
+            setActiveIMG(product.gallery[0]);
+        }
+    }, [product]);
 
     return (
         <div className='md:px-20 lg:px-28'>
@@ -64,7 +64,7 @@ function Product() {
                         <p className="text-[18px] font-bold">COLOR:</p>
                         <div className="flex gap-3">
                             {product.colors && product.colors.map((color) =>
-                            (<button className="w-[32px] h-[32px] border-2 hover:border-[#5ECE7B]" style={{ backgroundColor: color }}></button>))}
+                                (<button className="w-[32px] h-[32px] border-2 hover:border-[#5ECE7B]" style={{ backgroundColor: color }}></button>))}
                         </div>
                     </div>
                     <div className="mt-10">
@@ -74,7 +74,7 @@ function Product() {
                         </p>
                     </div>
                     <div className="mt-10">
-                    <button onClick={() => {
+                        <button onClick={() => {
                             addProductToOrder(product);
                         }} className="bg-[#5ECE7B] text-white w-full max-w-[300px] py-4 font-medium">
                             ADD TO CART
@@ -92,40 +92,3 @@ function Product() {
 }
 
 export default Product
-
-// brand
-// :
-// "Apple"
-// category
-// :
-// "Tech"
-// colors
-// :
-// (4) ['Natural', 'Blue', 'White', 'Black']
-// createdAt
-// :
-// "2024-02-07T10:59:51.097Z"
-// description
-// :
-// "Best phone we have ever made"
-// gallery
-// :
-// (2) ['https://store.storeimages.cdn-apple.com/4982/as-im…d=5120&hei=2880&fmt=p-jpg&qlt=80&.v=1693009283359', 'https://store.storeimages.cdn-apple.com/4982/as-im…US?wid=728&hei=666&fmt=png-alpha&.v=1693346851451']
-// id
-// :
-// "65c362a7532d246ff111a4ae"
-// inventory
-// :
-// 15
-// price
-// :
-// 1199
-// size
-// :
-// (2) ['256GB', '512GB']
-// title
-// :
-// "iPhone 15 Pro Max"
-// updatedAt
-// :
-// "2024-02-07T10:59:51.097Z"

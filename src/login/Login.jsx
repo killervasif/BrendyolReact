@@ -25,7 +25,7 @@ function Login() {
                 const data = await response.json();
                 const token = data.user.token;
                 setCookie('accessToken', token, { path: '/' });
-                navigate("/main")
+                navigate("/main");
             }
             else {
                 console.log(response.status)

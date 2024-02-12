@@ -4,6 +4,7 @@ import App from './App.jsx'
 import './index.css'
 import { BrowserRouter } from 'react-router-dom'
 import { GlobalContext } from './contexts/GlobalContext.jsx'
+import { CookieProvider } from './contexts/CookieContext.jsx'
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -15,5 +16,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         </GlobalContext>
       </BrowserRouter>
     </CookieProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 )
